@@ -1,0 +1,17 @@
+# 依赖与构建产物
+node_modules/
+dist/
+build/
+
+# 工具缓存（FlowDeck / opencode 等本地工作目录，勿上传）
+.opencode/
+.fd-plan/
+*.log
+
+# 编辑器与系统文件
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini

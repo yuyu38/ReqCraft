@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReqCraft · 请求工坊</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">ReqCraft</span>
+      <span class="subtitle">请求工坊 · 把浏览器 cURL 一键转成代码</span>
+    </div>
+    <div class="privacy-badge">
+      <span class="badge-dot"></span>
+      所有转换均在浏览器本地完成，不上传任何数据
+    </div>
+  </header>
+
+  <main class="workspace">
+
+    <section class="panel input-panel">
+      <div class="panel-head">
+        <h2>粘贴 cURL 请求</h2>
+        <button id="sampleBtn" class="btn btn-ghost" type="button">加载示例</button>
+        <button id="clearBtn" class="btn btn-ghost" type="button">清空</button>
+        <button id="parseBtn" class="btn btn-primary" type="button">解析</button>
+      </div>
+      <textarea id="curlInput"
+        placeholder="在浏览器开发者工具中右键请求 → Copy → Copy as cURL (bash)，粘贴到这里…&#10;&#10;支持单引号 / 双引号 / 转义 / 换行反斜杠 / Windows cmd 转义格式。&#10;输入内容不会离开你的浏览器。"></textarea>
+      <div id="parseStatus" class="status-box" hidden></div>
+    </section>
+
+    <section class="panel request-panel">
+      <div class="panel-head">
+        <h2>解析结果</h2>
+      </div>
+      <div id="requestInfo" class="request-info empty">
+        <div class="empty-state">解析成功后，请求方法、URL、参数、Headers、Cookies 和 Body 会显示在这里</div>
+      </div>
+    </section>
+
+    <section class="panel code-panel">
+      <div class="panel-head">
+        <h2>生成代码</h2>
+        <div class="tabs" role="tablist">
+          <button class="tab is-active" data-lang="python" type="button">Python requests</button>
+          <button class="tab" data-lang="fetch" type="button">JavaScript fetch</button>
+          <button class="tab" data-lang="curl" type="button">cURL</button>
+        </div>
+        <button id="copyCodeBtn" class="btn btn-primary" type="button">复制代码</button>
+      </div>
+      <div id="codeWarnings" class="warn-box" hidden></div>
+      <pre id="codeOutput" class="code-output empty"></pre>
+      <div id="codeEmpty" class="empty-state">粘贴 cURL 并点击「解析」，生成代码将显示在这里</div>
+    </section>
+
+    <section class="panel headers-panel">
+      <div class="panel-head">
+        <h2>Headers 转换</h2>
+        <div class="tabs" role="tablist">
+          <button class="tab is-active" data-hfmt="json" type="button">JSON</button>
+          <button class="tab" data-hfmt="js" type="button">JavaScript 对象</button>
+          <button class="tab" data-hfmt="py" type="button">Python 字典</button>
+        </div>
+        <button id="copyHeaderBtn" class="btn btn-primary" type="button">复制结果</button>
+      </div>
+      <div class="duo">
+        <div class="duo-col">
+          <label class="label" for="headerInput">原始 Header 文本（每行一个 Key: Value）</label>
+          <textarea id="headerInput"
+            placeholder="Content-Type: application/json&#10;Authorization: Bearer xxx&#10;X-Custom-Header: hello world"></textarea>
+        </div>
+        <div class="duo-col">
+          <label class="label" for="headerOutput">转换结果</label>
+          <pre id="headerOutput" class="code-output"></pre>
+          <div id="headerStatus" class="status-box" hidden></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    ReqCraft 是纯前端工具：不发送网络请求、不使用 localStorage、不读写任何本地文件。
+  </footer>
+
+  <script src="core.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

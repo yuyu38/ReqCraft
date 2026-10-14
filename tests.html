@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReqCraft 测试套件</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .test-summary {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .test-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .test-badge.pass { background: rgba(34, 197, 94, .15); color: #22c55e; }
+    .test-badge.fail { background: rgba(239, 68, 68, .15); color: #ef4444; }
+    .test-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+    .test-item {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+      font-size: 13px;
+    }
+    .test-item.pass .mark { color: #22c55e; }
+    .test-item.fail { border-color: rgba(239, 68, 68, .5); }
+    .test-item.fail .mark { color: #ef4444; }
+    .test-item .err {
+      color: #f87171;
+      font-family: var(--mono);
+      font-size: 12px;
+      word-break: break-all;
+    }
+    .test-item .name { flex: 1; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">ReqCraft</span>
+      <span class="subtitle">测试套件 · 核心解析与转换逻辑</span>
+    </div>
+    <a class="nav-link" href="index.html">← 返回工具</a>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>测试结果</h2>
+        <button id="rerunBtn" class="btn btn-primary">重新运行</button>
+      </div>
+      <div id="summary" class="test-summary"></div>
+      <ul id="testList" class="test-list"></ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    ReqCraft 测试完全在浏览器本地运行，不发送任何网络请求。
+  </footer>
+
+  <script src="core.js"></script>
+  <script src="tests.js"></script>
+  <script>
+    (function () {
+      function render() {
+        var summary = document.getElementById('summary');
+        var list = document.getElementById('testList');
+        summary.innerHTML = '';
+        list.innerHTML = '';
+
+        if (typeof ReqCraft === 'undefined') {
+          summary.innerHTML = '<span class="test-badge fail">core.js 未加载</span>';
+          return;
+        }
+
+        var results = ReqCraftTests.run();
+        var passed = results.filter(function (r) { return r.ok; }).length;
+        var failed = results.length - passed;
+
+        var badge = document.createElement('span');
+        badge.className = 'test-badge ' + (failed === 0 ? 'pass' : 'fail');
+        badge.textContent = failed === 0
+          ? '全部通过：' + passed + ' / ' + results.length
+          : '失败 ' + failed + ' / ' + results.length + '（通过 ' + passed + '）';
+        summary.appendChild(badge);
+
+        var mode = document.createElement('span');
+        mode.className = 'muted';
+        mode.textContent = '运行于浏览器本地 · ' + new Date().toLocaleString();
+        summary.appendChild(mode);
+
+        results.forEach(function (r) {
+          var li = document.createElement('li');
+          li.className = 'test-item ' + (r.ok ? 'pass' : 'fail');
+          var mark = document.createElement('span');
+          mark.className = 'mark';
+          mark.textContent = r.ok ? '✓' : '✗';
+          var name = document.createElement('span');
+          name.className = 'name';
+          name.textContent = r.name;
+          li.appendChild(mark);
+          li.appendChild(name);
+          if (!r.ok) {
+            var err = document.createElement('span');
+            err.className = 'err';
+            err.textContent = r.error;
+            li.appendChild(err);
+          }
+          list.appendChild(li);
+        });
+      }
+
+      document.getElementById('rerunBtn').addEventListener('click', render);
+      render();
+    })();
+  </script>
+</body>
+</html>
